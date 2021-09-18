@@ -77,7 +77,6 @@ class HotspotCookie {
         } else {
             return false;
         }
-        }
     }
 
 }
