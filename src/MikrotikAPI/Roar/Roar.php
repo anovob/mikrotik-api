@@ -62,14 +62,30 @@ class Roar {
     }
 
     public function initialize() {
-        $auth = $this->auth
+        $auth = $this->auth;
+       // $this->connector = new Connector($auth->getHost(), $auth->getPort(), $auth->getUsername(), $auth->getPassword());
         if($this->useROS){
+            //$this->routerAPI->connect($auth->getHost(), $auth->getUsername(), $auth->getPassword());
             $this->sender = new RoarSender($this->connector, $this->routerAPI, TRUE);
             $this->reciever = new RoarReciever($this->connector, $this->routerAPI, TRUE);
+            //$this->connected = $this->routerAPI->isConnected();
         }
-        else
+        else{
+//            $this->connector->connect();
+//            $tries = 0;
+//            while(!$this->connector->isConnected() && $tries != $auth->getAttempts())
+//            {
+//                $this->connector->connect();
+//                sleep(2);
+//            }
+//            //failed to connect
+//            if($tries == $auth->getAttempts())
+//            {
+//                throw new MikrotikException('Could not connect to Mikrotik');
+//            }
             $this->sender = new RoarSender($this->connector);
             $this->reciever = new RoarReciever($this->connector);
+            //$this->connected = $this->connector->isConnected();
         }
         $this->initialized = TRUE;
     }

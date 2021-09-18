@@ -33,7 +33,7 @@ class PPPoEClient {
      */
     public function add($param) {
         $sentence = new SentenceUtil();
-        $sentence->addCommand("/interface/pppoe-client/add");
+        $sentence->addCommand("/interface/add");
         foreach ($param as $name => $value) {
             $sentence->setAttribute($name, $value);
         }
@@ -48,7 +48,8 @@ class PPPoEClient {
      */
     public function getAll() {
         $sentence = new SentenceUtil();
-        $sentence->fromCommand("/interface/pppoe-client/getall");
+        $sentence->fromCommand("/interface/getall");
+        $sentence->where("type", "=", 'pppoe-in');
         $this->roar->send($sentence);
         $rs = $this->roar->getResult();
         $i = 0;
@@ -67,7 +68,7 @@ class PPPoEClient {
      */
     public function enable($id) {
         $sentence = new SentenceUtil();
-        $sentence->addCommand("/interface/pppoe-client/enable");
+        $sentence->addCommand("/interface/enable");
         $sentence->where(".id", "=", $id);
         $enable = $this->roar->send($sentence);
         return "Success";
@@ -81,7 +82,7 @@ class PPPoEClient {
      */
     public function disable($id) {
         $sentence = new SentenceUtil();
-        $sentence->addCommand("/interface/pppoe-client/disable");
+        $sentence->addCommand("/interface/disable");
         $sentence->where(".id", "=", $id);
         $enable = $this->roar->send($sentence);
         return "Success";
@@ -95,7 +96,7 @@ class PPPoEClient {
      */
     public function delete($id) {
         $sentence = new SentenceUtil();
-        $sentence->addCommand("/interface/pppoe-client/remove");
+        $sentence->addCommand("/interface/remove");
         $sentence->where(".id", "=", $id);
         $enable = $this->roar->send($sentence);
         return "Success";
@@ -110,7 +111,7 @@ class PPPoEClient {
      */
     public function set($param, $id) {
         $sentence = new SentenceUtil();
-        $sentence->addCommand("/interface/pppoe-client/set");
+        $sentence->addCommand("/interface/set");
         foreach ($param as $name => $value) {
             $sentence->setAttribute($name, $value);
         }
@@ -127,8 +128,31 @@ class PPPoEClient {
      */
     public function detail($id) {
         $sentence = new SentenceUtil();
-        $sentence->fromCommand("/interface/pppoe-client/print");
+        $sentence->fromCommand("/interface/print");
         $sentence->where(".id", "=", $id);
+        $this->roar->send($sentence);
+        $rs = $this->roar->getResult();
+        $i = 0;
+        if ($i < $rs->size()) {
+            foreach ($rs->getResultArray() as $resust){
+                return $resust;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * This method is used to display one pppoe-client
+     * in detail based on the Name
+     * @param type $name srting
+     * @return type array
+     */
+    public function getTraficByName($name) {
+        $sentence = new SentenceUtil();
+        $sentence->fromCommand("/interface/monitor-traffic");
+        $sentence->setAttribute('interface', '<pppoe-'. $name .'>');
+        $sentence->setAttribute('once', '');
         $this->roar->send($sentence);
         $rs = $this->roar->getResult();
         $i = 0;
